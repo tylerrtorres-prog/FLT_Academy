@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTL Academy LMS - Demo Simulation</title>
+    <title>FTL Academy LMS - Production Version</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -26,10 +26,10 @@
 </head>
 <body class="min-h-screen antialiased">
 
-    <!-- Instruction Banner / Role Switcher -->
+    <!-- Developer/User Instruction Banner -->
     <div class="max-w-7xl mx-auto px-4 pt-4">
         <div id="role-switcher" class="bg-blue-100 p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between text-sm mb-4 border border-blue-300">
-            <span class="font-semibold text-blue-800">SIMULATION MODE:</span>
+            <span class="font-semibold text-blue-800">ROLE SIMULATOR:</span>
             <span id="current-role" class="font-bold text-lg text-primary-accent"></span>
             <div class="flex space-x-3 mt-2 md:mt-0">
                 <button onclick="setRole('FTL')" class="px-3 py-1 bg-primary-accent text-white font-semibold rounded-lg hover:bg-red-700 transition">View as FTL User</button>
@@ -61,61 +61,70 @@
     </main>
 
     <script>
-        // --- Full FTL Academy Curriculum Data (Detailed for Facilitation) ---
-        // NOTE: The curriculum is updated to reflect the 4-hour schedule (0900-1300) and the new Day 6, 7, 10 content.
+        // --- Full FTL Academy Curriculum Data (Updated with dedicated 'assignment' field) ---
         const FTL_CURRICULUM = {
             1: [
                 { id: '1A', day: 1, session: 'Morning', title: 'Leadership Foundations & The Strategic Mindset', 
-                    concepts: ['The shift from "Doer" to **"Orchestrator."**', 'Understanding the "Why" (system rationale) over the "What" (task execution).', 'Principles of remote leadership (Over-communication, digital presence).'],
+                    concepts: ['The shift from "Doer" to **"Orchestrator."**', 'Understanding the "Why" (system rationale) over the "What" (task execution).', 'Principles of remote leadership (Over-communication, digital presence).', 'The VA Bank mission: helping veterans become millionaires.'],
+                    assignment: 'Read: Selected chapters on systems thinking. Reflect: Write about your transition from Personal Banker to FTL mindset (1 page). Member Education: Create a simple financial literacy topic list for members.',
                     activity: { name: 'Role-Play: The Sherpa Mindset', details: 'FTLs practice guiding a subordinate through a problem without giving the answer, focusing on powerful, open-ended questions.' },
-                    facilitator: '[Time: 10 min] **Welcome & Icebreaker.** [Time: 45 min] **Session 1: Mindset Shift & Core Rules:** Define the FTL Oath (No Drama, No Bullshit). [Time: 75 min] **Session 2: Remote Leadership & Coaching:** Debrief challenges. **Prompt:** "How does your digital footprint reflect the standards you expect?" Run the Sherpa Mindset role-play. [Time: 90 min] **Session 3: System Mapping & Financial Literacy:** Map the Member Journey and discuss the VAB mission (helping veterans become millionaires).'
+                    facilitator: '[Time: 10 min] **Welcome & Icebreaker.** [Time: 45 min] **Session 1: Mindset Shift & Core Rules:** Define the FTL Oath (No Drama, No Bullshit). [Time: 75 min] **Session 2: Remote Leadership & Coaching:** Debrief challenges. Run the Sherpa Mindset role-play. [Time: 90 min] **Session 3: System Mapping & Financial Literacy:** Map the Member Journey and discuss the VAB mission. **EVENING ASSIGNMENT:** Review and discuss expectations for completion.'
                 },
                 { id: '2A', day: 2, session: 'Morning', title: 'Processor & Underwriter Perspectives (Mortgage)', 
-                    concepts: ['Processor workflow & prioritization in the LOS (Brightly).', 'Mandatory **LOS Input Rules** (data integrity for AUS).', 'Credit Risk Scoring: Reading a credit report beyond the FICO score (derogatory credit history).'],
+                    concepts: ['Processor workflow & prioritization in the LOS (Brightly).', 'Credit Risk Scoring: Reading a credit report beyond the FICO score (derogatory credit history).', 'Advanced Income/Asset: Complex P&L analysis, sourcing large non-payroll deposits.', 'The Underwriter\'s Mindset: Risk assessment vs. sales.'],
+                    assignment: 'Case study: Review 2 complex loan scenarios and identify processing/underwriting challenges. Create a "Perfect Loan Package" checklist for your Fire Team.',
                     activity: { name: 'Hands-On: The Flawless File Review', details: 'Review sample loan packages (redacted) and flag 5 common errors that trigger a Processor Suspension and an Underwriter condition.' },
-                    facilitator: '[Time: 90 min] **Session 1: Processor Guest Speaker.** Focus on the *cost* (time/member trust) of bad data input and "Red Flags." [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Underwriter Guest Speaker.** Focus on **risk vs. sales** and the 3 C\'s. Challenge FTLs on their risk decisions. [Time: 30 min] **Session 3: Workshop:** Run the Flawless File Review and Credit Analysis Workshop concurrently. FTLs must identify errors and propose a compliant Letter of Explanation (LOX).'
+                    facilitator: '[Time: 90 min] **Session 1: Processor Guest Speaker.** Focus on LOS Input Rules and "Red Flags." [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Underwriter Guest Speaker.** Focus on **Bank Overlays vs. Agency Rules** and the 3 C\'s. [Time: 30 min] **Session 3: Workshop:** Run the Flawless File Review. FTLs must identify errors and propose a compliant Letter of Explanation (LOX). **EVENING ASSIGNMENT:** Review case study expectations.'
                 },
                 { id: '3A', day: 3, session: 'Morning', title: 'VA Loans, Specialty Products & Closing Process', 
-                    concepts: ['VA/FHA Guideline Overlays (VAB specific).', 'Certificate of Eligibility (COE) and entitlement restoration.', 'The Closer’s View: Understanding and curing **Tolerance Violations (TRID)**.'],
+                    concepts: ['VA/FHA Guideline Overlays (VAB specific).', 'Certificate of Eligibility (COE) and entitlement restoration.', 'The Closer’s View: Understanding and curing **Tolerance Violations (TRID)**.', 'Title issues and resolutions (liens, easements).'],
+                    assignment: 'Review sample Closing Disclosures and identify all components. Create a VA loan troubleshooting guide for your team.',
                     activity: { name: 'CD Deep Dive & VA Case Study', details: 'FTLs review a sample Loan Estimate vs. Closing Disclosure and identify where a tolerance cure would be necessary. Solve a scenario involving a surviving spouse and a joint VA loan.' },
-                    facilitator: '[Time: 90 min] **Session 1: VA Loan Specialist Guest Speaker.** Focus on complex entitlement scenarios and MPRs/CRVs. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Specialty Products:** Review FHA/Conventional overlays and Construction loan draw schedules. [Time: 75 min] **Session 3: Closer Guest Speaker:** Emphasize that the FTL\'s job is to prepare the member and anticipate title issues *before* the CD is sent. Run the CD Deep Dive & VA Case Study.'
+                    facilitator: '[Time: 90 min] **Session 1: VA Loan Specialist Guest Speaker.** Focus on complex entitlement scenarios and MPRs/CRVs. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Specialty Products:** Review FHA/Conventional overlays and Construction loan draw schedules. [Time: 75 min] **Session 3: Closer Guest Speaker & Workshop.** Emphasize preparing the member for closing. Run the CD Deep Dive & VA Case Study. **EVENING ASSIGNMENT:** Discuss CD review process.'
                 },
                 { id: '4A', day: 4, session: 'Morning', title: 'Advanced Insurance & Member Wealth Building', 
-                    concepts: ['Carrier’s Perspective: Medical underwriting, MIB reports, and risk classification.', 'IUL & VetLife Program: Cash value access strategies, policy loan mechanics, and **tax-advantaged growth**.', 'P&C Underwriting: Credit-based insurance scores and Umbrella Policies.'],
+                    concepts: ['IUL & VetLife Program: Cash value access strategies, policy loan mechanics, and **tax-advantaged growth**.', 'P&C Underwriting: Credit-based insurance scores and Umbrella Policies.', 'Teaching Members About Wealth Building with Life Insurance (generational wealth).'],
+                    assignment: 'Create P&C insurance needs analysis template for members. Case study: Comprehensive insurance review for member with multiple needs. Member Education: Create a simple guide explaining how members can use insurance for wealth building.',
                     activity: { name: 'Case Study: Life & Retirement Plan Design', details: 'Design a comprehensive life insurance and retirement plan (including IUL) for a sample member, focusing on the **generational wealth** component.' },
-                    facilitator: '[Time: 105 min] **Session 1: Life Underwriter Guest Speaker.** Focus on how the FTL teaches their team to integrate life insurance as a financial pillar. **Lecture:** IUL mechanics, illustrations, and wealth transfer. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: P&C Underwriter Guest Speaker & Workshop.** P&C underwriting, risk coordination, and run the Case Study: Life & Retirement Plan Design. Stress teaching teams to explain IUL as a wealth tool.'
+                    facilitator: '[Time: 105 min] **Session 1: Life Underwriter Guest Speaker.** Focus on how the FTL teaches their team to integrate life insurance as a financial pillar. Run the Life & Retirement Plan Design Case Study. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: P&C Underwriter Guest Speaker & Workshop.** P&C underwriting, risk coordination, and stress teaching teams to explain IUL as a wealth tool. **EVENING ASSIGNMENT:** Discuss the creation of wealth-building talking points.'
                 },
                 { id: '5A', day: 5, session: 'Morning', title: 'Banking Operations, Compliance & Risk Management', 
                     concepts: ['Core System Transaction Codes & KYC/CIP requirements.', '**BSA/AML Compliance (CTR/SAR)** Thresholds and reporting obligations.', 'Regulation E (EFT) dispute protocols and GLBA privacy requirements.', 'Credit building strategies to teach members (Credit Optimization).'],
+                    assignment: 'Create banking product comparison guide for members. Review compliance scenarios and appropriate responses. Member Education: Develop a "Banking 101" presentation for members.',
                     activity: { name: 'Compliance Scenario Application', details: 'FTLs review 3 scenarios involving suspicious activity (money laundering, wire fraud) and determine the appropriate reporting, compliance, and member education steps.' },
-                    facilitator: '[Time: 105 min] **Session 1: Banking Ops & Compliance Officer Guests.** Focus on fraud detection, BSA/AML, and TILA/Reg E. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: Workshop.** Run the Compliance Scenario Application. FTLs must identify the *exact regulatory obligation* and develop a "Banking 101" member education presentation.'
+                    facilitator: '[Time: 105 min] **Session 1: Banking Ops & Compliance Officer Guests.** Focus on fraud detection, BSA/AML, and TILA/Reg E. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: Workshop.** Run the Compliance Scenario Application. FTLs must identify the *exact regulatory obligation* and develop a "Banking 101" member education presentation. **EVENING ASSIGNMENT:** Confirm understanding of compliance report documentation.'
                 },
             ],
             2: [
                 { id: '6A', day: 6, session: 'Morning', title: 'LEGAL & REGULATORY COMPLIANCE FOR LEADERS', 
-                    concepts: ['RESPA, TILA, ECOA, and FCRA requirements.', 'The SAFE Act and licensing obligations.', 'Fair lending and disparate impact (Redlining/Steering).', 'Marketing compliance: TCPA, CAN-SPAM, and record retention.'],
+                    concepts: ['RESPA, TILA, ECOA, and FCRA requirements.', 'Fair lending and disparate impact (Redlining/Steering).', 'Marketing compliance: TCPA, CAN-SPAM, and record retention.', 'Consequences of non-compliance (fines, license suspension).'],
+                    assignment: 'Review compliance scenarios and identify violations. Create compliance checklist for your Fire Team. Document escalation procedures for compliance concerns.',
                     activity: { name: 'Compliance Risk Audit Simulation', details: 'FTLs review mock marketing materials and team communication transcripts to identify 5 critical compliance violations that require immediate escalation.' },
-                    facilitator: '[Time: 120 min] **Session 1: Legal Counsel Guest Speaker.** Overview of RESPA/TILA/ECOA. Focus on the cost of non-compliance. [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Chief Compliance Officer Guest Speaker & Workshop.** Focus on creating a culture of compliance, audit preparedness, and running the Compliance Risk Audit Simulation.'
+                    facilitator: '[Time: 120 min] **Session 1: Legal Counsel Guest Speaker.** Overview of RESPA/TILA/ECOA. Focus on the cost of non-compliance and the FTL\'s role in SAFE Act compliance. [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Chief Compliance Officer Guest Speaker & Workshop.** Focus on creating a culture of compliance, audit preparedness, and running the Compliance Risk Audit Simulation. **EVENING ASSIGNMENT:** Discuss the creation of the team compliance checklist.'
                 },
                 { id: '7A', day: 7, session: 'Morning', title: 'HR ESSENTIALS FOR FIRE TEAM LEADERS', 
-                    concepts: ['Employment Law Basics: At-will, Protected Classes (Title VII, ADA, GINA).', 'Harassment and hostile work environment (Prevention & Reporting).', 'Progressive Discipline: Verbal, Written, Final Warning (objective documentation).', 'FMLA and USERRA protections for service members.'],
+                    concepts: ['Employment Law Basics: At-will, Protected Classes (Title VII, ADA, GINA).', 'Harassment and hostile work environment (Prevention & Reporting).', 'Progressive Discipline process (Verbal, Written, Final).', 'FMLA and USERRA protections for service members.'],
+                    assignment: 'Practice documentation: Write up 3 sample performance scenarios. Create performance management toolkit for your Fire Team. Review case studies on employment law violations and proper responses.',
                     activity: { name: 'Documentation & PIP Workshop', details: 'FTLs draft documentation for a poor performance scenario and create a clear, measurable Performance Improvement Plan (PIP).' },
-                    facilitator: '[Time: 120 min] **Session 1: HR Director Guest Speaker.** Focus on the legal pitfalls of leadership (documentation, discrimination). [Time: 15 min] **Break.** [Time: 105 min] **Session 2: HR Business Partner Guest Speaker & Workshop.** Focus on performance management documentation. Run the Documentation & PIP Workshop. Stress: "If it\'s not documented, it didn\'t happen."'
+                    facilitator: '[Time: 120 min] **Session 1: HR Director Guest Speaker.** Focus on the legal pitfalls of leadership (documentation, discrimination). [Time: 15 min] **Break.** [Time: 105 min] **Session 2: HR Business Partner Guest Speaker & Workshop.** Focus on performance management documentation. Run the Documentation & PIP Workshop. Stress: "If it\'s not documented, it didn\'t happen." **EVENING ASSIGNMENT:** Emphasize the importance of objective language in performance documentation.'
                 },
                 { id: '8A', day: 8, session: 'Morning', title: 'MASTERING PROCESS, PIPELINE & TEAM COORDINATION', 
                     concepts: ['Quality Control (QC) standards and **Audit Trail Requirements**.', 'Pipeline Management: Velocity Metrics and bottleneck identification.', 'Creating **System Feedback Loops** with Operations to improve team quality.', 'Leveraging CRM/LOS for team efficiency.'],
+                    assignment: 'Create pipeline management dashboard template. Document standard operating procedures for your Fire Team. Member Education: Develop a member financial wellness assessment template.',
                     activity: { name: 'Workshop: SOP & Dashboard Template', details: 'FTLs create a draft Standard Operating Procedure (SOP) for new file submission and a simple Pipeline Velocity Dashboard template.' },
-                    facilitator: '[Time: 90 min] **Session 1: Process Deep Dive (Universal).** Focus on how to structure a process that is both fast and compliant. [Time: 15 min] **Break.** [Time: 135 min] **Session 2 & 3: Workshop & Systems.** Run the SOP/Dashboard Workshop. FTLs must leave with a plan to implement these tools immediately. Review CRM/LOS best practices and training techniques.'
+                    facilitator: '[Time: 90 min] **Session 1: Process Deep Dive (Universal).** Focus on how to structure a process that is both fast and compliant. [Time: 15 min] **Break.** [Time: 135 min] **Session 2 & 3: Workshop & Systems.** Run the SOP/Dashboard Workshop. FTLs must leave with a plan to implement these tools immediately. Review CRM/LOS best practices and training techniques. **EVENING ASSIGNMENT:** Confirm understanding of SOP development.'
                 },
                 { id: '9A', day: 9, session: 'Morning', title: 'LEADERSHIP SKILLS - COACHING, PERFORMANCE & COMMUNICATION', 
                     concepts: ['The **GROW Model** (Goal, Reality, Options, Will) for structured coaching.', 'Setting SMART goals and production/activity metrics.', 'Communication Mastery: Running effective one-on-ones, huddles, and conflict resolution.'],
+                    assignment: 'Create coaching conversation templates. Develop team recognition program and meeting schedules. Member Education: Create a training guide for your team on conducting member financial literacy sessions.',
                     activity: { name: 'Advanced Role-Play: GROW Model & Difficult Conversation', details: 'Practice using the GROW model with a team member struggling with complex product knowledge and deliver a tough accountability message.' },
-                    facilitator: '[Time: 90 min] **Session 1: Workshop.** Introduce and practice the GROW model. [Time: 15 min] **Break.** [Time: 75 min] **Session 2: Performance & Accountability.** Lecture on SMART goals and addressing performance issues. [Time: 80 min] **Session 3: Communication Mastery.** Run the Advanced Role-Play. Focus on professional language and maintaining composure ("Never complaining in public").'
+                    facilitator: '[Time: 90 min] **Session 1: Workshop.** Introduce and practice the GROW model. [Time: 15 min] **Break.** [Time: 75 min] **Session 2: Performance & Accountability.** Lecture on SMART goals and addressing performance issues. [Time: 80 min] **Session 3: Communication Mastery.** Run the Advanced Role-Play. Focus on professional language and maintaining composure. **EVENING ASSIGNMENT:** Discuss implementation of the recognition program.'
                 },
                 { id: '10A', day: 10, session: 'Morning', title: 'FINANCIAL LITERACY, WEALTH GENERATION & GRADUATION', 
                     concepts: ['Financial Literacy as a Member Service Tool (VAB mission).', 'Teaching members about budgeting, credit optimization, and debt payoff strategies.', 'Investment Education: Diversification, compound interest, and supporting veteran entrepreneurs.', 'Final Assessment & Leadership Vision.'],
+                    assignment: 'No evening assignment. Prepare for final assessment.',
                     activity: { name: 'Master Case Study & Leadership Presentation', details: 'FTLs solve a 5-product financial scenario, integrating member education and present their Personal Leadership Philosophy and 30-60-90 Day Plan.' },
-                    facilitator: '[Time: 120 min] **Session 1: Guest Speaker (Financial Advisor).** Focus on the VAB mission and creating generational wealth. Emphasize how FTLs train their teams to be educators, not just salespeople. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Final Exam & Case Study.** [Time: 75 min] **Session 3: Presentations & Graduation.** Conduct final FTL presentations and the graduation ceremony, reinforcing the leadership commitment.'
+                    facilitator: '[Time: 120 min] **Session 1: Guest Speaker (Financial Advisor).** Focus on the VAB mission and creating generational wealth. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Final Exam & Case Study.** [Time: 75 min] **Session 3: Presentations & Graduation.** Conduct final FTL presentations and the graduation ceremony. **EVENING ASSIGNMENT:** None, focus on closing ceremonies.'
                 }
             ]
         };
@@ -137,12 +146,20 @@
         
         // --- State Management ---
         let currentRole = 'FTL';
-        let currentMockProgress = { ...MOCK_FTL_PROGRESS };
+        let currentMockProgress = { ...MOCK_ADMIN_DATA['FTL-Alpha-723'].progress };
         let activeWeek = 1;
         let expandedSession = null;
+        // Mock submitted assignments for testing purposes (Day 1 and 2 submitted)
+        let submittedAssignments = {'1A': true, '2A': true}; 
 
         // --- Core Quiz Simulation Functions ---
         window.startQuiz = (sessionId) => {
+            // Check if the assignment has been submitted before allowing the quiz
+            if (submittedAssignments[sessionId] !== true) {
+                alert('Action Required: Please submit your Evening Assignment before starting the module quiz.');
+                return;
+            }
+
             // A simple simulation: 80% chance of passing
             const passed = Math.random() > 0.2; 
 
@@ -155,12 +172,17 @@
             }
         };
 
-        // --- Component Rendering Functions (Simplified for HTML Demo) ---
+        window.simulateUpload = (sessionId) => {
+            submittedAssignments[sessionId] = true;
+            alert('Assignment Uploaded Successfully! You may now begin the quiz.');
+            renderDashboard(); // Re-render to update the button status
+        };
+
+        // --- Component Rendering Functions (Updated to show Evening Assignment) ---
 
         const renderCourseDetail = (sessionData, userProgress) => {
-            const isCompleted = userProgress[sessionData.id] || false;
             const isFacilitator = currentRole === 'Facilitator';
-
+            
             const activityHtml = sessionData.activity ? `
                 <div class="bg-blue-50 p-3 rounded-md border border-blue-200">
                     <p class="font-semibold text-blue-700 flex items-center">
@@ -170,9 +192,11 @@
                     <p class="text-gray-700 text-sm mt-1">${sessionData.activity.details || ''}</p>
                 </div>` : '';
 
-            const quizButton = isCompleted
+            const quizButton = userProgress[sessionData.id] 
                 ? '<button class="px-4 py-1 text-sm font-semibold rounded-full bg-green-600 text-white cursor-default">Completed</button>'
-                : `<button onclick="startQuiz('${sessionData.id}')" class="px-4 py-1 text-sm font-semibold rounded-full bg-primary-accent text-white hover:bg-red-700 transition">Start Quiz (Simulated)</button>`;
+                : submittedAssignments[sessionData.id] ? 
+                `<button onclick="startQuiz('${sessionData.id}')" class="px-4 py-1 text-sm font-semibold rounded-full bg-primary-accent text-white hover:bg-red-700 transition">Start Quiz (Simulated)</button>`
+                : '<button class="px-4 py-1 text-sm font-semibold rounded-full bg-gray-400 text-white cursor-not-allowed" disabled>Quiz Locked (Submit Assignment)</button>';
 
             const facilitatorScript = `
                 <div class="border-l-4 border-yellow-500 pl-3 bg-yellow-50 p-3 rounded-md">
@@ -186,7 +210,7 @@
             return `
                 <div class="p-4 bg-white rounded-lg shadow-inner border border-gray-200 mt-4">
                     <div class="flex justify-between items-start mb-3 border-b pb-2">
-                        <h4 class="text-xl font-bold text-secondary-dark">${sessionData.title}</h4>
+                        <h4 class="text-xl font-bold text-secondary-dark">Core Module: ${sessionData.title}</h4>
                         ${isFacilitator ? '' : quizButton}
                     </div>
                     
@@ -208,6 +232,42 @@
             `;
         };
 
+        const renderAssignmentModule = (sessionData) => {
+            if (!sessionData.assignment) return '';
+            
+            const isFacilitator = currentRole === 'Facilitator';
+            const isAssignmentSubmitted = submittedAssignments[sessionData.id] === true;
+            
+            // --- NEW: Labeled Assignment Title ---
+            const assignmentTitle = `Day ${sessionData.day} - EVENING ASSIGNMENT (1-2 Hours)`;
+
+            return `
+                <div class="bg-gray-100 p-4 rounded-xl shadow-inner border-l-4 border-primary-accent mt-2">
+                    <p class="font-bold text-lg text-primary-accent flex items-center mb-1">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.5v11m0 0l-4-4m4 4l4-4" /></svg>
+                        ${assignmentTitle}
+                    </p>
+                    <p class="text-xs text-red-600 font-semibold ml-7 mb-2">Required to unlock the next module's quiz.</p>
+
+                    <p class="text-sm text-gray-700 mb-4">${sessionData.assignment}</p>
+
+                    ${isFacilitator ? 
+                        '<p class="text-xs text-red-600 font-semibold">INSTRUCTOR NOTE: Submission is simulated here. In production, this section will track file uploads and unlock the module quiz.</p>' 
+                        : isAssignmentSubmitted ? 
+                        '<button class="px-3 py-1 text-xs font-semibold rounded-lg bg-green-600 text-white cursor-default">Assignment Submitted</button>'
+                        : `
+                        <input type="file" id="file-${sessionData.id}" class="hidden" onchange="simulateUpload('${sessionData.id}')">
+                        <label for="file-${sessionData.id}" class="inline-block px-4 py-2 text-sm font-semibold rounded-lg bg-primary-accent text-white hover:bg-red-700 transition cursor-pointer">
+                            Simulate Upload Assignment
+                        </label>
+                        <p class="text-xs text-gray-500 mt-2">Submission is required to unlock the core module quiz.</p>
+                        `
+                    }
+                </div>
+            `;
+        };
+
+
         const renderCurriculum = (userId) => {
             return `
                 <div class="p-4 md:p-8">
@@ -222,27 +282,30 @@
                         </button>
                     </div>
 
-                    <div id="curriculum-content" class="space-y-4">
+                    <div id="curriculum-content" class="space-y-6">
                         ${FTL_CURRICULUM[activeWeek].map((session) => `
-                            <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-secondary-dark">
-                                <div 
-                                    class="p-4 cursor-pointer flex justify-between items-center hover:bg-gray-50"
-                                    onclick="toggleSession('${session.id}')"
-                                >
-                                    <div>
-                                        <p class="text-xs font-semibold uppercase tracking-wider text-primary-accent">Day ${session.day} - ${session.session}</p>
-                                        <h3 class="text-lg font-bold text-secondary-dark">${session.title}</h3>
+                            <div class="space-y-2">
+                                <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-secondary-dark">
+                                    <div 
+                                        class="p-4 cursor-pointer flex justify-between items-center hover:bg-gray-50"
+                                        onclick="toggleSession('${session.id}')"
+                                    >
+                                        <div>
+                                            <p class="text-xs font-semibold uppercase tracking-wider text-primary-accent">Day ${session.day} - ${session.session} (0900-1300)</p>
+                                            <h3 class="text-lg font-bold text-secondary-dark">${session.title}</h3>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <span class="w-3 h-3 rounded-full ${currentMockProgress[session.id] ? 'bg-green-600' : 'bg-gray-400'}" title="${currentMockProgress[session.id] ? 'Completed' : 'Incomplete'}"></span>
+                                            <svg class="w-5 h-5 text-gray-600 transition-transform ${expandedSession === session.id ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center space-x-3">
-                                        <span class="w-3 h-3 rounded-full ${currentMockProgress[session.id] ? 'bg-green-600' : 'bg-gray-400'}" title="${currentMockProgress[session.id] ? 'Completed' : 'Incomplete'}"></span>
-                                        <svg class="w-5 h-5 text-gray-600 transition-transform ${expandedSession === session.id ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                                    </div>
+                                    ${expandedSession === session.id ? `
+                                        <div class="p-4 border-t border-gray-200">
+                                            ${renderCourseDetail(session, currentMockProgress)}
+                                        </div>
+                                    ` : ''}
                                 </div>
-                                ${expandedSession === session.id ? `
-                                    <div class="p-4 border-t border-gray-200">
-                                        ${renderCourseDetail(session, currentMockProgress)}
-                                    </div>
-                                ` : ''}
+                                ${renderAssignmentModule(session)}
                             </div>
                         `).join('')}
                     </div>
@@ -376,6 +439,13 @@
 
         window.setRole = (role) => {
             currentRole = role;
+            // When switching roles, reset the expanded session and mock progress for consistent view
+            expandedSession = null;
+            if (role === 'FTL') {
+                 currentMockProgress = { ...MOCK_ADMIN_DATA['FTL-Alpha-723'].progress };
+                 // Reset assignments when switching back to FTL demo
+                 submittedAssignments = {'1A': true, '2A': true}; 
+            }
             renderDashboard();
         };
 
@@ -403,8 +473,6 @@
                     break;
                 case 'FTL':
                 default:
-                    // If switching roles, use a mock FTL's progress data for consistent testing
-                    currentMockProgress = { ...MOCK_ADMIN_DATA['FTL-Alpha-723'].progress };
                     contentHTML = renderFTLDashboard('FTL-Alpha-723');
                     tagText = 'FTL USER';
                     tagClass = 'bg-primary-accent';
