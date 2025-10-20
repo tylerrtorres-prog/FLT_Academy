@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FTL Academy LMS - Production Version</title>
+    <title>FTL Academy LMS - Demo Simulation</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,14 +20,16 @@
         .text-secondary-dark { color: var(--secondary-dark); }
         .bg-secondary-dark { background-color: var(--secondary-dark); }
         .header-bg { background-image: linear-gradient(135deg, var(--secondary-dark) 0%, #111827 100%); }
+        /* Add a fixed height for the content area to prevent layout shift on toggling */
+        #app-root { min-height: 80vh; }
     </style>
 </head>
 <body class="min-h-screen antialiased">
 
-    <!-- Developer/User Instruction Banner -->
+    <!-- Instruction Banner / Role Switcher -->
     <div class="max-w-7xl mx-auto px-4 pt-4">
         <div id="role-switcher" class="bg-blue-100 p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between text-sm mb-4 border border-blue-300">
-            <span class="font-semibold text-blue-800">ROLE SIMULATOR:</span>
+            <span class="font-semibold text-blue-800">SIMULATION MODE:</span>
             <span id="current-role" class="font-bold text-lg text-primary-accent"></span>
             <div class="flex space-x-3 mt-2 md:mt-0">
                 <button onclick="setRole('FTL')" class="px-3 py-1 bg-primary-accent text-white font-semibold rounded-lg hover:bg-red-700 transition">View as FTL User</button>
@@ -60,109 +62,60 @@
 
     <script>
         // --- Full FTL Academy Curriculum Data (Detailed for Facilitation) ---
+        // NOTE: The curriculum is updated to reflect the 4-hour schedule (0900-1300) and the new Day 6, 7, 10 content.
         const FTL_CURRICULUM = {
             1: [
                 { id: '1A', day: 1, session: 'Morning', title: 'Leadership Foundations & The Strategic Mindset', 
                     concepts: ['The shift from "Doer" to **"Orchestrator."**', 'Understanding the "Why" (system rationale) over the "What" (task execution).', 'Principles of remote leadership (Over-communication, digital presence).'],
                     activity: { name: 'Role-Play: The Sherpa Mindset', details: 'FTLs practice guiding a subordinate through a problem without giving the answer, focusing on powerful, open-ended questions.' },
-                    facilitator: '[Time: 10 min] **Welcome & Icebreaker.** [Time: 45 min] **Presentation:** Define the FTL role and the FTL Oath (No Drama, No Bullshit). [Time: 90 min] **Discussion:** Debrief the challenges of leading remote teams. **Prompt:** "How does your digital footprint reflect the standards you expect?" [Time: 30 min] **Activity:** Run the Sherpa Mindset role-play in pairs. Stress that a leader’s greatest asset is teaching systemic thinking.'
+                    facilitator: '[Time: 10 min] **Welcome & Icebreaker.** [Time: 45 min] **Session 1: Mindset Shift & Core Rules:** Define the FTL Oath (No Drama, No Bullshit). [Time: 75 min] **Session 2: Remote Leadership & Coaching:** Debrief challenges. **Prompt:** "How does your digital footprint reflect the standards you expect?" Run the Sherpa Mindset role-play. [Time: 90 min] **Session 3: System Mapping & Financial Literacy:** Map the Member Journey and discuss the VAB mission (helping veterans become millionaires).'
                 },
-                { id: '1B', day: 1, session: 'Afternoon', title: 'The Operations Ecosystem & System Mapping', 
-                    concepts: ['Mapping the Member Journey (30K ft view).', 'The interdependency of SME Verticals (Mortgage, Insurance, etc.).', 'KPIs that matter for FTLs (**Pipeline Velocity**, File Quality Index).'],
-                    activity: { name: 'Group Exercise: The VAB System Map', details: 'FTLs map the flow of a multi-product member (Mortgage + Life Insurance + Commercial Account) and identify 3 potential friction points for each product.' },
-                    facilitator: '[Time: 60 min] **Lecture:** Define the VAB Ecosystem (MS, Ops, SME Verticals). [Time: 90 min] **Activity:** Assign groups for the VAB System Map exercise. Circulate to challenge assumptions about back-end processes. **Prompt:** "Where is the *compliance checkpoint* in the Life Insurance process?" [Time: 30 min] **Discussion:** Review team goals vs. individual goals and how to measure Pipeline Velocity (velocity metrics).'
+                { id: '2A', day: 2, session: 'Morning', title: 'Processor & Underwriter Perspectives (Mortgage)', 
+                    concepts: ['Processor workflow & prioritization in the LOS (Brightly).', 'Mandatory **LOS Input Rules** (data integrity for AUS).', 'Credit Risk Scoring: Reading a credit report beyond the FICO score (derogatory credit history).'],
+                    activity: { name: 'Hands-On: The Flawless File Review', details: 'Review sample loan packages (redacted) and flag 5 common errors that trigger a Processor Suspension and an Underwriter condition.' },
+                    facilitator: '[Time: 90 min] **Session 1: Processor Guest Speaker.** Focus on the *cost* (time/member trust) of bad data input and "Red Flags." [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Underwriter Guest Speaker.** Focus on **risk vs. sales** and the 3 C\'s. Challenge FTLs on their risk decisions. [Time: 30 min] **Session 3: Workshop:** Run the Flawless File Review and Credit Analysis Workshop concurrently. FTLs must identify errors and propose a compliant Letter of Explanation (LOX).'
                 },
-                { id: '2A', day: 2, session: 'Morning', title: 'Processor’s Perspective & LOS Integrity (Backend Focus)', 
-                    concepts: ['Processor workflow & prioritization in the LOS (Brightly).', 'Mandatory **LOS Input Rules** (data integrity for AUS).', 'Advanced Income/Asset: Complex P&L analysis, sourcing large non-payroll deposits (**Reg E**).'],
-                    activity: { name: 'Hands-On: The Flawless File Review', details: 'Review sample loan packages (redacted) and flag 5 common errors that trigger a Processor Suspension.' },
-                    facilitator: '[Time: 90 min] **Guest Speaker:** Senior Processor. Instruct the speaker to focus on the *cost* (time/member trust) of bad data input and the Processor\'s "Red Flags." [Time: 60 min] **Activity:** Hands-on Flawless File Review. FTLs must identify errors and propose a compliant Letter of Explanation (LOX).'
+                { id: '3A', day: 3, session: 'Morning', title: 'VA Loans, Specialty Products & Closing Process', 
+                    concepts: ['VA/FHA Guideline Overlays (VAB specific).', 'Certificate of Eligibility (COE) and entitlement restoration.', 'The Closer’s View: Understanding and curing **Tolerance Violations (TRID)**.'],
+                    activity: { name: 'CD Deep Dive & VA Case Study', details: 'FTLs review a sample Loan Estimate vs. Closing Disclosure and identify where a tolerance cure would be necessary. Solve a scenario involving a surviving spouse and a joint VA loan.' },
+                    facilitator: '[Time: 90 min] **Session 1: VA Loan Specialist Guest Speaker.** Focus on complex entitlement scenarios and MPRs/CRVs. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Specialty Products:** Review FHA/Conventional overlays and Construction loan draw schedules. [Time: 75 min] **Session 3: Closer Guest Speaker:** Emphasize that the FTL\'s job is to prepare the member and anticipate title issues *before* the CD is sent. Run the CD Deep Dive & VA Case Study.'
                 },
-                { id: '2B', day: 2, session: 'Afternoon', title: 'The Closer’s View & QC Triggers', 
-                    concepts: ['Post Clear-to-Close workflow (CD preparation).', 'Understanding and curing **Tolerance Violations (TRID)**.', 'Title Commitment Review: Identifying and clearing complex liens, judgments, and easements.'],
-                    activity: { name: 'CD Deep Dive Workshop', details: 'FTLs review a sample Loan Estimate (LE) vs. Closing Disclosure (CD) and identify where a tolerance cure would be necessary.' },
-                    facilitator: '[Time: 90 min] **Lecture:** TRID and the three types of fees. Emphasize that the FTL\'s job is to prepare the member and anticipate title issues *before* the CD is sent. [Time: 60 min] **Activity:** CD Deep Dive Workshop. Review common closing fraud prevention protocols (Wire Fraud).'
+                { id: '4A', day: 4, session: 'Morning', title: 'Advanced Insurance & Member Wealth Building', 
+                    concepts: ['Carrier’s Perspective: Medical underwriting, MIB reports, and risk classification.', 'IUL & VetLife Program: Cash value access strategies, policy loan mechanics, and **tax-advantaged growth**.', 'P&C Underwriting: Credit-based insurance scores and Umbrella Policies.'],
+                    activity: { name: 'Case Study: Life & Retirement Plan Design', details: 'Design a comprehensive life insurance and retirement plan (including IUL) for a sample member, focusing on the **generational wealth** component.' },
+                    facilitator: '[Time: 105 min] **Session 1: Life Underwriter Guest Speaker.** Focus on how the FTL teaches their team to integrate life insurance as a financial pillar. **Lecture:** IUL mechanics, illustrations, and wealth transfer. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: P&C Underwriter Guest Speaker & Workshop.** P&C underwriting, risk coordination, and run the Case Study: Life & Retirement Plan Design. Stress teaching teams to explain IUL as a wealth tool.'
                 },
-                { id: '3A', day: 3, session: 'Morning', title: 'Underwriter’s Perspective (Technical Risk)', 
-                    concepts: ['Underwriter mindset: Risk mitigation via the 3 C\'s.', '**Bank Overlays vs. Agency Rules** (VAB specific constraints).', '**AUS Findings Deep Dive** (DU/LP Logic): Interpreting condition codes and submission requirements.'],
-                    activity: { name: 'Scenario Analysis: Be the Underwriter', details: 'FTLs underwrite a complex file and determine conditions using the provided Underwriter’s Checklist (Course Material).' },
-                    facilitator: '[Time: 150 min] **Guest Speaker:** Senior Underwriter. Focus on **risk vs. sales**. Challenge the FTLs on their risk decisions during the Q&A. [Time: 30 min] **Activity:** Begin the "Be the Underwriter" scenario. Stress the power of the **LOX** to "tell the story" and mitigate risk.'
-                },
-                { id: '3B', day: 3, session: 'Afternoon', title: 'Advanced Underwriting Concepts (Capacity & Collateral)', 
-                    concepts: ['Credit Risk Scoring: Reading a credit report beyond the FICO score (derogatory credit history).', 'DTI Mastery: **Residual Income Calc** (VA loans) and calculating complex debt (student loans, alimony).', 'Collateral Analysis: MPRs and **Appraisal Quality** (identifying deficient appraisals).'],
-                    activity: { name: 'Credit Analysis Workshop', details: 'Analyze credit reports for two different borrowers and advise on DTI optimization and compensating factors.' },
-                    facilitator: '[Time: 90 min] **Workshop:** DTI deep dive. Focus on calculating non-traditional income. [Time: 60 min] **Discussion:** Review Compensating Factors. **Prompt:** "When is a 48% DTI acceptable to an underwriter?" [Time: 60 min] **Lecture:** The appraisal process from an underwriter’s view (Appraisal Review and QC).'
-                },
-                { id: '4A', day: 4, session: 'Morning', title: 'VA Loan Mastery & Specialty Products', 
-                    concepts: ['VA/FHA Guideline Overlays (VAB specific).', 'Certificate of Eligibility (COE) and entitlement restoration.', 'VA Appraisal: CRV and Minimum Property Requirements (MPRs).'],
-                    activity: { name: 'Case Study: Maximizing VA Benefits', details: 'Solve a scenario involving a surviving spouse, a joint loan with a non-veteran, and a VA IRRRL.' },
-                    facilitator: '[Time: 90 min] **Guest Specialist:** VA Loan Expert. Focus on complex entitlement scenarios. [Time: 90 min] **Activity:** Solve the "Maximizing VA Benefits" case study. Emphasize the financial benefit of the funding fee calculation and exemptions.'
-                },
-                { id: '4B', day: 4, session: 'Afternoon', title: 'Conventional & Construction Loans', 
-                    concepts: ['Fannie Mae vs. Freddie Mac key differences.', 'Investment Property financing and condo/PUD approvals.', 'Construction-to-Permanent and FHA 203(k) Renovation loan draw schedules and inspections.'],
-                    activity: { name: 'Product Comparison Matrix', details: 'FTLs complete a matrix comparing income and property eligibility rules for VA, FHA, and Conventional.' },
-                    facilitator: '[Time: 150 min] **Lecture/Workshop:** Review advanced topics (Jumbo, investment property rules). [Time: 90 min] **Activity:** Complete the Product Comparison Matrix. Focus on when to pivot a member based on property condition or DTI. Discuss the operations of Construction-to-Perm loans.'
-                },
-                { id: '5A', day: 5, session: 'Morning', title: 'Banking Ops, Compliance, & Regulatory Frameworks', 
-                    concepts: ['Core System Transaction Codes & KYC/CIP requirements.', '**BSA/AML Compliance (CTR/SAR)** Thresholds and reporting obligations.', 'Regulation E (EFT) dispute protocols and GLBA privacy requirements.'],
-                    activity: { name: 'Compliance Scenario Application', details: 'FTLs review 3 scenarios involving suspicious activity (money laundering, wire fraud) and determine the appropriate reporting and member interaction steps.' },
-                    facilitator: '[Time: 90 min] **Guest Speaker:** Compliance Officer. Emphasize the FTL\'s role as the first line of defense against fraud and financial crime. [Time: 90 min] **Activity:** Compliance Scenario Application. FTLs must identify the *exact regulatory obligation* for each scenario.'
-                },
-                { id: '5B', day: 5, session: 'Afternoon', title: 'Workflow Mastery & SOP Creation (System Checks)', 
-                    concepts: ['Quality Control (QC) standards and **Audit Trail Requirements**.', 'Pipeline Management: Velocity Metrics and bottleneck identification.', 'Creating **System Feedback Loops** with Operations to improve team quality.'],
-                    activity: { name: 'Workshop: SOP/Dashboard Template', details: 'FTLs create a draft Standard Operating Procedure (SOP) for new file submission and a simple Pipeline Velocity Dashboard template.' },
-                    facilitator: '[Time: 90 min] **Lecture:** Process Deep Dive (Universal). Focus on how to structure a process that is both fast and compliant. [Time: 90 min] **Activity:** SOP/Dashboard Workshop. FTLs must leave with a plan to implement these tools immediately. **Prompt:** "How often do you measure Pipeline Velocity?"'
+                { id: '5A', day: 5, session: 'Morning', title: 'Banking Operations, Compliance & Risk Management', 
+                    concepts: ['Core System Transaction Codes & KYC/CIP requirements.', '**BSA/AML Compliance (CTR/SAR)** Thresholds and reporting obligations.', 'Regulation E (EFT) dispute protocols and GLBA privacy requirements.', 'Credit building strategies to teach members (Credit Optimization).'],
+                    activity: { name: 'Compliance Scenario Application', details: 'FTLs review 3 scenarios involving suspicious activity (money laundering, wire fraud) and determine the appropriate reporting, compliance, and member education steps.' },
+                    facilitator: '[Time: 105 min] **Session 1: Banking Ops & Compliance Officer Guests.** Focus on fraud detection, BSA/AML, and TILA/Reg E. [Time: 15 min] **Break.** [Time: 120 min] **Session 2 & 3: Workshop.** Run the Compliance Scenario Application. FTLs must identify the *exact regulatory obligation* and develop a "Banking 101" member education presentation.'
                 },
             ],
             2: [
-                { id: '6A', day: 6, session: 'Morning', title: 'Life Insurance Underwriting & Strategy', 
-                    concepts: ['Carrier’s Perspective: Medical underwriting, MIB reports, and risk classification.', 'IUL & VetLife Program: Caps, floors, cash value access strategies, and policy loan mechanics.', 'Positioning applications for best outcomes.'],
-                    activity: { name: 'Case Study: Life & Retirement Plan Design', details: 'Design a comprehensive life insurance and retirement plan for a sample member (e.g., active duty vs. veteran entrepreneur).' },
-                    facilitator: '[Time: 120 min] **Guest Speaker:** Life Underwriter. Focus on how the FTL teaches their team to integrate life insurance as a financial pillar. [Time: 60 min] **Lecture:** IUL mechanics and illustrations. Focus on explaining projections correctly.'
+                { id: '6A', day: 6, session: 'Morning', title: 'LEGAL & REGULATORY COMPLIANCE FOR LEADERS', 
+                    concepts: ['RESPA, TILA, ECOA, and FCRA requirements.', 'The SAFE Act and licensing obligations.', 'Fair lending and disparate impact (Redlining/Steering).', 'Marketing compliance: TCPA, CAN-SPAM, and record retention.'],
+                    activity: { name: 'Compliance Risk Audit Simulation', details: 'FTLs review mock marketing materials and team communication transcripts to identify 5 critical compliance violations that require immediate escalation.' },
+                    facilitator: '[Time: 120 min] **Session 1: Legal Counsel Guest Speaker.** Overview of RESPA/TILA/ECOA. Focus on the cost of non-compliance. [Time: 15 min] **Break.** [Time: 105 min] **Session 2: Chief Compliance Officer Guest Speaker & Workshop.** Focus on creating a culture of compliance, audit preparedness, and running the Compliance Risk Audit Simulation.'
                 },
-                { id: '6B', day: 6, session: 'Afternoon', title: 'Retirement Planning & P&C Integration', 
-                    concepts: ['VAB Personal Pension Plan and Annuity products (income riders).', 'P&C Underwriting: Credit-based insurance scores and property condition requirements.', 'Umbrella Policies and Commercial P&C overview (BOP, General Liability).'],
-                    activity: { name: 'Needs Analysis Template Creation', details: 'FTLs create a template to conduct a comprehensive P&C and retirement needs analysis for a member.' },
-                    facilitator: '[Time: 90 min] **Lecture:** Retirement planning integration (VA Bank Pension). [Time: 90 min] **Workshop:** P&C underwriting and risk. Emphasize the coordination of benefits. [Time: 60 min] **Activity:** Needs Analysis Template Creation.'
+                { id: '7A', day: 7, session: 'Morning', title: 'HR ESSENTIALS FOR FIRE TEAM LEADERS', 
+                    concepts: ['Employment Law Basics: At-will, Protected Classes (Title VII, ADA, GINA).', 'Harassment and hostile work environment (Prevention & Reporting).', 'Progressive Discipline: Verbal, Written, Final Warning (objective documentation).', 'FMLA and USERRA protections for service members.'],
+                    activity: { name: 'Documentation & PIP Workshop', details: 'FTLs draft documentation for a poor performance scenario and create a clear, measurable Performance Improvement Plan (PIP).' },
+                    facilitator: '[Time: 120 min] **Session 1: HR Director Guest Speaker.** Focus on the legal pitfalls of leadership (documentation, discrimination). [Time: 15 min] **Break.** [Time: 105 min] **Session 2: HR Business Partner Guest Speaker & Workshop.** Focus on performance management documentation. Run the Documentation & PIP Workshop. Stress: "If it\'s not documented, it didn\'t happen."'
                 },
-                { id: '7A', day: 7, session: 'Morning', title: 'Commercial Credit Analysis (Modeling)', 
-                    concepts: ['Commercial vs. Residential underwriting.', 'Financial Statement Analysis (P&L, Balance Sheet, Cash Flow).', '**DSCR Modeling** and **Global Cash Flow** analysis.'],
-                    activity: { name: 'Hands-On: Business Financial Analysis', details: 'FTLs analyze a redacted P&L statement, calculate key financial ratios (DSCR, Working Capital), and determine a preliminary risk rating.' },
-                    facilitator: '[Time: 120 min] **Guest Speaker:** Commercial Credit Analyst. Focus on how the FTL teaches their team to interview a business owner using financial statements. [Time: 60 min] **Activity:** Hands-on Business Financial Analysis.'
+                { id: '8A', day: 8, session: 'Morning', title: 'MASTERING PROCESS, PIPELINE & TEAM COORDINATION', 
+                    concepts: ['Quality Control (QC) standards and **Audit Trail Requirements**.', 'Pipeline Management: Velocity Metrics and bottleneck identification.', 'Creating **System Feedback Loops** with Operations to improve team quality.', 'Leveraging CRM/LOS for team efficiency.'],
+                    activity: { name: 'Workshop: SOP & Dashboard Template', details: 'FTLs create a draft Standard Operating Procedure (SOP) for new file submission and a simple Pipeline Velocity Dashboard template.' },
+                    facilitator: '[Time: 90 min] **Session 1: Process Deep Dive (Universal).** Focus on how to structure a process that is both fast and compliant. [Time: 15 min] **Break.** [Time: 135 min] **Session 2 & 3: Workshop & Systems.** Run the SOP/Dashboard Workshop. FTLs must leave with a plan to implement these tools immediately. Review CRM/LOS best practices and training techniques.'
                 },
-                { id: '7B', day: 7, session: 'Afternoon', title: 'SBA & Commercial Real Estate', 
-                    concepts: ['SBA 7(a) and 504 Programs (uses, terms, and guarantees).', 'Commercial Real Estate: **LTV/DSCR Stress Testing** and Environmental Phase I/II assessments.', 'Supporting Veteran Business Owners (SDVOSB, VOSB).'],
-                    activity: { name: 'Scenario: Structuring a Commercial Deal', details: 'Structure a combined SBA 7(a) loan (working capital) and CRE loan (owner-occupied property) for a veteran business.' },
-                    facilitator: '[Time: 180 min] **Lecture/Workshop:** SBA program deep dive and CRE principles. Focus on recourse vs. non-recourse and collateral. **Prompt:** "What is the biggest risk difference between financing a 10-unit residential property and a commercial office building?"'
+                { id: '9A', day: 9, session: 'Morning', title: 'LEADERSHIP SKILLS - COACHING, PERFORMANCE & COMMUNICATION', 
+                    concepts: ['The **GROW Model** (Goal, Reality, Options, Will) for structured coaching.', 'Setting SMART goals and production/activity metrics.', 'Communication Mastery: Running effective one-on-ones, huddles, and conflict resolution.'],
+                    activity: { name: 'Advanced Role-Play: GROW Model & Difficult Conversation', details: 'Practice using the GROW model with a team member struggling with complex product knowledge and deliver a tough accountability message.' },
+                    facilitator: '[Time: 90 min] **Session 1: Workshop.** Introduce and practice the GROW model. [Time: 15 min] **Break.** [Time: 75 min] **Session 2: Performance & Accountability.** Lecture on SMART goals and addressing performance issues. [Time: 80 min] **Session 3: Communication Mastery.** Run the Advanced Role-Play. Focus on professional language and maintaining composure ("Never complaining in public").'
                 },
-                { id: '8A', day: 8, session: 'Morning', title: 'Beyond Traditional Lending & Business Services', 
-                    concepts: ['Business Banking Services (Merchant Services, Cash Management, ACH).', 'Group Benefits and Employee Services (401k, health plans).', 'The **Business Squad Approach**: Coordinating internal VAB teams.'],
-                    activity: { name: 'Group Brainstorm: Business Onboarding', details: 'Develop a 5-step comprehensive onboarding process for a new, high-value business client.' },
-                    facilitator: '[Time: 90 min] **Guest Speaker:** Business Banking Specialist. Show how integration of services deepens the relationship. [Time: 90 min] **Activity:** Group Brainstorm and presentation of the Business Onboarding process. The goal is client retention.'
-                },
-                { id: '8B', day: 8, session: 'Afternoon', title: 'Complex Business Scenarios & Growth Strategies', 
-                    concepts: ['Business Succession Planning and Buy-Sell Agreements.', 'M&A and expansion financing.', 'Marketing/Networking for Business Growth.'],
-                    activity: { name: 'Case Study: Business Succession', details: 'Address a scenario where a veteran owner is planning retirement, requiring succession planning and key person insurance.' },
-                    facilitator: '[Time: 150 min] **Workshop:** Discuss advanced scenarios. FTLs must be strategic advisors, guiding clients through the entire business lifecycle. [Time: 30 min] **Wrap-up:** Set 90-day partnership outreach goals for their teams.'
-                },
-                { id: '9A', day: 9, session: 'Morning', title: 'Coaching & Mentoring: The GROW Model', 
-                    concepts: ['Effective coaching techniques (asking vs. telling).', 'The **GROW Model** (Goal, Reality, Options, Will) for structured coaching.', 'Developing individualized development plans (IDPs).'],
-                    activity: { name: 'Advanced Role-Play: Coaching for Development', details: 'Practice using the GROW model with a team member struggling with complex product knowledge.' },
-                    facilitator: '[Time: 90 min] **Workshop:** Introduce the GROW model. [Time: 90 min] **Activity:** Advanced Role-Play. Provide immediate, constructive feedback on the FTLs\' use of questioning and listening skills. Remind FTLs that coaching is about *future* performance.'
-                },
-                { id: '9B', day: 9, session: 'Afternoon', title: 'Performance Management & Accountability', 
-                    concepts: ['Setting SMART goals (Production goals, quality metrics).', 'Addressing underperformance early (Documentation and PIPs).', 'Communication Mastery: Having difficult conversations and running effective one-on-ones.'],
-                    activity: { name: 'Workshop: Difficult Conversation Script', details: 'FTLs draft a script for addressing a team member who consistently fails to meet file quality standards.' },
-                    facilitator: '[Time: 90 min] **Lecture:** Performance Management. Stress that accountability must be paired with leadership support. [Time: 90 min] **Activity:** Difficult Conversation Script Workshop. Focus on professional language and documentation. [Time: 60 min] **Discussion:** Recognition and Motivation best practices.'
-                },
-                { id: '10A', day: 10, session: 'Morning', title: 'Comprehensive Master Case Study & Final Assessment', 
-                    concepts: ['Integration of all 10 days of operational and product knowledge.', 'Applying compliance protocols in complex scenarios.', 'Systematic file remediation and problem-solving.'],
-                    activity: { name: 'Final Comprehensive Exam & Case Study', details: 'Written assessment (85% min pass) followed by a final, holistic Master Case Study presentation (5-product solution).' },
-                    facilitator: '[Time: 120 min] **Final Exam.** [Time: 60 min] **Master Case Study** (Individual Work). Circulate and challenge FTLs on their risk decisions. The goal is to see systemic thinking.'
-                },
-                { id: '10B', day: 10, session: 'Afternoon', title: 'Leadership Presentations & Graduation', 
-                    concepts: ['Articulating a clear leadership philosophy and vision.', 'Creating actionable 30-60-90 day plans.', 'The role of senior leadership in ongoing FTL support.'],
-                    activity: { name: 'Final Presentations & 360 Feedback', details: 'Each FTL presents their personal leadership vision. Peer and instructor feedback is provided.' },
-                    facilitator: '[Time: 120 min] **FTL Presentations.** [Time: 60 min] **Guest Speaker Panel** (Squad Leaders/Senior Leadership). [Time: 60 min] **Graduation:** Celebrate the achievement and reinforce the FTL Oath of Leadership Commitment.'
+                { id: '10A', day: 10, session: 'Morning', title: 'FINANCIAL LITERACY, WEALTH GENERATION & GRADUATION', 
+                    concepts: ['Financial Literacy as a Member Service Tool (VAB mission).', 'Teaching members about budgeting, credit optimization, and debt payoff strategies.', 'Investment Education: Diversification, compound interest, and supporting veteran entrepreneurs.', 'Final Assessment & Leadership Vision.'],
+                    activity: { name: 'Master Case Study & Leadership Presentation', details: 'FTLs solve a 5-product financial scenario, integrating member education and present their Personal Leadership Philosophy and 30-60-90 Day Plan.' },
+                    facilitator: '[Time: 120 min] **Session 1: Guest Speaker (Financial Advisor).** Focus on the VAB mission and creating generational wealth. Emphasize how FTLs train their teams to be educators, not just salespeople. [Time: 15 min] **Break.** [Time: 60 min] **Session 2: Final Exam & Case Study.** [Time: 75 min] **Session 3: Presentations & Graduation.** Conduct final FTL presentations and the graduation ceremony, reinforcing the leadership commitment.'
                 }
             ]
         };
@@ -171,17 +124,15 @@
 
         // --- Mock Data for Simulation ---
         const MOCK_FTL_PROGRESS = {
-            '1A': true, '1B': true, '2A': true, '2B': true, '3A': true,
-            '3B': true, '4A': false, '4B': false, '5A': false, '5B': false,
-            '6A': false, '6B': false, '7A': false, '7B': false, '8A': false,
-            '8B': false, '9A': false, '9B': false, '10A': false, '10B': false,
+            '1A': true, '2A': true, '3A': true, '4A': false, '5A': false,
+            '6A': false, '7A': false, '8A': false, '9A': false, '10A': false,
         };
         
         const MOCK_ADMIN_DATA = {
             'FTL-Alpha-723': { progress: { ...MOCK_FTL_PROGRESS }, userId: 'FTL-Alpha-723', name: 'Commander Alpha', role: 'FTL' }, // 30%
-            'FTL-Bravo-001': { progress: { '1A': true, '1B': true, '2A': true, '2B': true, '3A': true, '6A': true, '6B': true, '7A': true, '7B': true, '8A': true, '8B': true, '9A': true, '9B': true, '10A': true, '10B': true }, userId: 'FTL-Bravo-001', name: 'Lt. Bravo', role: 'FTL' }, // 75%
+            'FTL-Bravo-001': { progress: { '1A': true, '2A': true, '3A': true, '4A': true, '5A': true, '6A': false, '7A': false, '8A': false, '9A': false, '10A': false }, userId: 'FTL-Bravo-001', name: 'Lt. Bravo', role: 'FTL' }, // 50%
             'FTL-Charlie-989': { progress: { ...Object.fromEntries(ALL_SESSIONS.map(s => [s.id, true])) }, userId: 'FTL-Charlie-989', name: 'Capt. Charlie', role: 'FTL' }, // 100%
-            'FTL-Delta-444': { progress: { '1A': true }, userId: 'FTL-Delta-444', name: 'Sgt. Delta', role: 'FTL' }, // 5%
+            'FTL-Delta-444': { progress: { '1A': true }, userId: 'FTL-Delta-444', name: 'Sgt. Delta', role: 'FTL' }, // 10%
         };
         
         // --- State Management ---
@@ -192,10 +143,10 @@
 
         // --- Core Quiz Simulation Functions ---
         window.startQuiz = (sessionId) => {
-            const result = window.confirm(`SIMULATION: Starting the quiz for ${sessionId}. \n\nIn a real app, this would redirect to a 5-question test covering the session's concepts. \n\nClick OK to simulate **PASS** (mark complete).\nClick Cancel to simulate **FAIL** (remain incomplete).`);
-            
-            if (result) {
-                // Simulate success and mark complete
+            // A simple simulation: 80% chance of passing
+            const passed = Math.random() > 0.2; 
+
+            if (passed) {
                 currentMockProgress[sessionId] = true;
                 alert('Quiz Passed! Module marked complete.');
                 renderDashboard();
@@ -204,7 +155,7 @@
             }
         };
 
-        // --- Component Rendering Functions ---
+        // --- Component Rendering Functions (Simplified for HTML Demo) ---
 
         const renderCourseDetail = (sessionData, userProgress) => {
             const isCompleted = userProgress[sessionData.id] || false;
@@ -221,7 +172,7 @@
 
             const quizButton = isCompleted
                 ? '<button class="px-4 py-1 text-sm font-semibold rounded-full bg-green-600 text-white cursor-default">Completed</button>'
-                : `<button onclick="startQuiz('${sessionData.id}')" class="px-4 py-1 text-sm font-semibold rounded-full bg-primary-accent text-white hover:bg-red-700 transition">Start Quiz</button>`;
+                : `<button onclick="startQuiz('${sessionData.id}')" class="px-4 py-1 text-sm font-semibold rounded-full bg-primary-accent text-white hover:bg-red-700 transition">Start Quiz (Simulated)</button>`;
 
             const facilitatorScript = `
                 <div class="border-l-4 border-yellow-500 pl-3 bg-yellow-50 p-3 rounded-md">
@@ -267,7 +218,7 @@
                             WEEK 1: Mortgage & Operational Mastery
                         </button>
                         <button onclick="setActiveWeek(2)" class="p-3 text-sm font-medium border-b-2 transition duration-150 ${activeWeek === 2 ? 'border-primary-accent text-primary-accent' : 'border-transparent text-gray-500 hover:text-primary-accent'}">
-                            WEEK 2: Insurance, Commercial & Leadership Execution
+                            WEEK 2: Legal, HR, Commercial & Leadership Execution
                         </button>
                     </div>
 
@@ -283,7 +234,7 @@
                                         <h3 class="text-lg font-bold text-secondary-dark">${session.title}</h3>
                                     </div>
                                     <div class="flex items-center space-x-3">
-                                        <span class="w-3 h-3 rounded-full ${currentMockProgress[session.id] ? 'bg-green-600' : 'bg-gray-400'}"></span>
+                                        <span class="w-3 h-3 rounded-full ${currentMockProgress[session.id] ? 'bg-green-600' : 'bg-gray-400'}" title="${currentMockProgress[session.id] ? 'Completed' : 'Incomplete'}"></span>
                                         <svg class="w-5 h-5 text-gray-600 transition-transform ${expandedSession === session.id ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
                                     </div>
                                 </div>
@@ -309,7 +260,7 @@
                     
                     <div class="bg-white p-4 rounded-xl shadow-lg mb-6 border-l-4 border-primary-accent">
                         <p class="text-sm text-gray-600 mb-2">FTL ID: <span class="font-mono text-xs text-primary-accent">${userId}</span></p>
-                        <p class="text-xl font-semibold text-secondary-dark mb-2">Overall Progress: ${completedSessions} of ${TOTAL_SESSIONS} Sessions</p>
+                        <p class="text-xl font-semibold text-secondary-dark mb-2">Overall Progress: ${completedSessions} of ${TOTAL_SESSIONS} Modules</p>
                         <div class="w-full bg-gray-200 rounded-full h-3">
                             <div 
                                 class="bg-primary-accent h-3 rounded-full transition-all duration-500" 
@@ -346,7 +297,7 @@
                                 return `
                                     <li class="flex items-center justify-between border-b pb-2">
                                         <span class="font-semibold text-secondary-dark">${data.name}</span>
-                                        <span class="text-sm">${completed} / ${TOTAL_SESSIONS} Sessions (${percentage}%)</span>
+                                        <span class="text-sm">${completed} / ${TOTAL_SESSIONS} Modules (${percentage}%)</span>
                                     </li>
                                 `;
                             }).join('')}
@@ -452,6 +403,8 @@
                     break;
                 case 'FTL':
                 default:
+                    // If switching roles, use a mock FTL's progress data for consistent testing
+                    currentMockProgress = { ...MOCK_ADMIN_DATA['FTL-Alpha-723'].progress };
                     contentHTML = renderFTLDashboard('FTL-Alpha-723');
                     tagText = 'FTL USER';
                     tagClass = 'bg-primary-accent';
