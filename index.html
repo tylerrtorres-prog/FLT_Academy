@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTL Academy LMS - Production Version</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles for the theme */
+        :root {
+            --primary-accent: #B91C1C; /* Deep Red */
+            --secondary-dark: #1F2937; /* Deep Blue/Navy */
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .text-primary-accent { color: var(--primary-accent); }
+        .bg-primary-accent { background-color: var(--primary-accent); }
+        .text-secondary-dark { color: var(--secondary-dark); }
+        .bg-secondary-dark { background-color: var(--secondary-dark); }
+        .header-bg { background-image: linear-gradient(135deg, var(--secondary-dark) 0%, #111827 100%); }
+    </style>
+</head>
+<body class="min-h-screen antialiased">
+
+    <!-- Developer/User Instruction Banner -->
+    <div class="max-w-7xl mx-auto px-4 pt-4">
+        <div id="role-switcher" class="bg-blue-100 p-4 rounded-xl shadow-md flex flex-wrap items-center justify-between text-sm mb-4 border border-blue-300">
+            <span class="font-semibold text-blue-800">ROLE SIMULATOR:</span>
+            <span id="current-role" class="font-bold text-lg text-primary-accent"></span>
+            <div class="flex space-x-3 mt-2 md:mt-0">
+                <button onclick="setRole('FTL')" class="px-3 py-1 bg-primary-accent text-white font-semibold rounded-lg hover:bg-red-700 transition">View as FTL User</button>
+                <button onclick="setRole('Facilitator')" class="px-3 py-1 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition">View as Facilitator</button>
+                <button onclick="setRole('Admin')" class="px-3 py-1 bg-secondary-dark text-white font-semibold rounded-lg hover:bg-gray-700 transition">View as Admin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header-bg text-white p-6 md:p-8 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="https://s3-eu-central-1.amazonaws.com/com-recruiterflow-static-content-eu/careers-page/prod/db_f3b9b145d83e14c6cda95cbb821f78b5/IMG_2842.jpeg" 
+                     alt="The Veteran Alliance Bank Logo" 
+                     class="h-10 mr-4 rounded-lg shadow-md" />
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-widest text-gray-200">FTL ACADEMY LMS</h1>
+                    <p class="text-sm font-light text-primary-accent">The Veteran Alliance Bank</p>
+                </div>
+            </div>
+            <span id="role-tag" class="text-sm font-semibold p-2 bg-primary-accent rounded-lg"></span>
+        </div>
+    </header>
+
+    <!-- Main Content Root -->
+    <main id="app-root" class="max-w-7xl mx-auto">
+        <!-- Dashboard content will be rendered here by JavaScript -->
+    </main>
+
+    <script>
+        // --- Full FTL Academy Curriculum Data (Detailed for Facilitation) ---
+        const FTL_CURRICULUM = {
+            1: [
+                { id: '1A', day: 1, session: 'Morning', title: 'Leadership Foundations & The Strategic Mindset', 
+                    concepts: ['The shift from "Doer" to **"Orchestrator."**', 'Understanding the "Why" (system rationale) over the "What" (task execution).', 'Principles of remote leadership (Over-communication, digital presence).'],
+                    activity: { name: 'Role-Play: The Sherpa Mindset', details: 'FTLs practice guiding a subordinate through a problem without giving the answer, focusing on powerful, open-ended questions.' },
+                    facilitator: '[Time: 10 min] **Welcome & Icebreaker.** [Time: 45 min] **Presentation:** Define the FTL role and the FTL Oath (No Drama, No Bullshit). [Time: 90 min] **Discussion:** Debrief the challenges of leading remote teams. **Prompt:** "How does your digital footprint reflect the standards you expect?" [Time: 30 min] **Activity:** Run the Sherpa Mindset role-play in pairs. Stress that a leader’s greatest asset is teaching systemic thinking.'
+                },
+                { id: '1B', day: 1, session: 'Afternoon', title: 'The Operations Ecosystem & System Mapping', 
+                    concepts: ['Mapping the Member Journey (30K ft view).', 'The interdependency of SME Verticals (Mortgage, Insurance, etc.).', 'KPIs that matter for FTLs (**Pipeline Velocity**, File Quality Index).'],
+                    activity: { name: 'Group Exercise: The VAB System Map', details: 'FTLs map the flow of a multi-product member (Mortgage + Life Insurance + Commercial Account) and identify 3 potential friction points for each product.' },
+                    facilitator: '[Time: 60 min] **Lecture:** Define the VAB Ecosystem (MS, Ops, SME Verticals). [Time: 90 min] **Activity:** Assign groups for the VAB System Map exercise. Circulate to challenge assumptions about back-end processes. **Prompt:** "Where is the *compliance checkpoint* in the Life Insurance process?" [Time: 30 min] **Discussion:** Review team goals vs. individual goals and how to measure Pipeline Velocity (velocity metrics).'
+                },
+                { id: '2A', day: 2, session: 'Morning', title: 'Processor’s Perspective & LOS Integrity (Backend Focus)', 
+                    concepts: ['Processor workflow & prioritization in the LOS (Brightly).', 'Mandatory **LOS Input Rules** (data integrity for AUS).', 'Advanced Income/Asset: Complex P&L analysis, sourcing large non-payroll deposits (**Reg E**).'],
+                    activity: { name: 'Hands-On: The Flawless File Review', details: 'Review sample loan packages (redacted) and flag 5 common errors that trigger a Processor Suspension.' },
+                    facilitator: '[Time: 90 min] **Guest Speaker:** Senior Processor. Instruct the speaker to focus on the *cost* (time/member trust) of bad data input and the Processor\'s "Red Flags." [Time: 60 min] **Activity:** Hands-on Flawless File Review. FTLs must identify errors and propose a compliant Letter of Explanation (LOX).'
+                },
+                { id: '2B', day: 2, session: 'Afternoon', title: 'The Closer’s View & QC Triggers', 
+                    concepts: ['Post Clear-to-Close workflow (CD preparation).', 'Understanding and curing **Tolerance Violations (TRID)**.', 'Title Commitment Review: Identifying and clearing complex liens, judgments, and easements.'],
+                    activity: { name: 'CD Deep Dive Workshop', details: 'FTLs review a sample Loan Estimate (LE) vs. Closing Disclosure (CD) and identify where a tolerance cure would be necessary.' },
+                    facilitator: '[Time: 90 min] **Lecture:** TRID and the three types of fees. Emphasize that the FTL\'s job is to prepare the member and anticipate title issues *before* the CD is sent. [Time: 60 min] **Activity:** CD Deep Dive Workshop. Review common closing fraud prevention protocols (Wire Fraud).'
+                },
+                { id: '3A', day: 3, session: 'Morning', title: 'Underwriter’s Perspective (Technical Risk)', 
+                    concepts: ['Underwriter mindset: Risk mitigation via the 3 C\'s.', '**Bank Overlays vs. Agency Rules** (VAB specific constraints).', '**AUS Findings Deep Dive** (DU/LP Logic): Interpreting condition codes and submission requirements.'],
+                    activity: { name: 'Scenario Analysis: Be the Underwriter', details: 'FTLs underwrite a complex file and determine conditions using the provided Underwriter’s Checklist (Course Material).' },
+                    facilitator: '[Time: 150 min] **Guest Speaker:** Senior Underwriter. Focus on **risk vs. sales**. Challenge the FTLs on their risk decisions during the Q&A. [Time: 30 min] **Activity:** Begin the "Be the Underwriter" scenario. Stress the power of the **LOX** to "tell the story" and mitigate risk.'
+                },
+                { id: '3B', day: 3, session: 'Afternoon', title: 'Advanced Underwriting Concepts (Capacity & Collateral)', 
+                    concepts: ['Credit Risk Scoring: Reading a credit report beyond the FICO score (derogatory credit history).', 'DTI Mastery: **Residual Income Calc** (VA loans) and calculating complex debt (student loans, alimony).', 'Collateral Analysis: MPRs and **Appraisal Quality** (identifying deficient appraisals).'],
+                    activity: { name: 'Credit Analysis Workshop', details: 'Analyze credit reports for two different borrowers and advise on DTI optimization and compensating factors.' },
+                    facilitator: '[Time: 90 min] **Workshop:** DTI deep dive. Focus on calculating non-traditional income. [Time: 60 min] **Discussion:** Review Compensating Factors. **Prompt:** "When is a 48% DTI acceptable to an underwriter?" [Time: 60 min] **Lecture:** The appraisal process from an underwriter’s view (Appraisal Review and QC).'
+                },
+                { id: '4A', day: 4, session: 'Morning', title: 'VA Loan Mastery & Specialty Products', 
+                    concepts: ['VA/FHA Guideline Overlays (VAB specific).', 'Certificate of Eligibility (COE) and entitlement restoration.', 'VA Appraisal: CRV and Minimum Property Requirements (MPRs).'],
+                    activity: { name: 'Case Study: Maximizing VA Benefits', details: 'Solve a scenario involving a surviving spouse, a joint loan with a non-veteran, and a VA IRRRL.' },
+                    facilitator: '[Time: 90 min] **Guest Specialist:** VA Loan Expert. Focus on complex entitlement scenarios. [Time: 90 min] **Activity:** Solve the "Maximizing VA Benefits" case study. Emphasize the financial benefit of the funding fee calculation and exemptions.'
+                },
+                { id: '4B', day: 4, session: 'Afternoon', title: 'Conventional & Construction Loans', 
+                    concepts: ['Fannie Mae vs. Freddie Mac key differences.', 'Investment Property financing and condo/PUD approvals.', 'Construction-to-Permanent and FHA 203(k) Renovation loan draw schedules and inspections.'],
+                    activity: { name: 'Product Comparison Matrix', details: 'FTLs complete a matrix comparing income and property eligibility rules for VA, FHA, and Conventional.' },
+                    facilitator: '[Time: 150 min] **Lecture/Workshop:** Review advanced topics (Jumbo, investment property rules). [Time: 90 min] **Activity:** Complete the Product Comparison Matrix. Focus on when to pivot a member based on property condition or DTI. Discuss the operations of Construction-to-Perm loans.'
+                },
+                { id: '5A', day: 5, session: 'Morning', title: 'Banking Ops, Compliance, & Regulatory Frameworks', 
+                    concepts: ['Core System Transaction Codes & KYC/CIP requirements.', '**BSA/AML Compliance (CTR/SAR)** Thresholds and reporting obligations.', 'Regulation E (EFT) dispute protocols and GLBA privacy requirements.'],
+                    activity: { name: 'Compliance Scenario Application', details: 'FTLs review 3 scenarios involving suspicious activity (money laundering, wire fraud) and determine the appropriate reporting and member interaction steps.' },
+                    facilitator: '[Time: 90 min] **Guest Speaker:** Compliance Officer. Emphasize the FTL\'s role as the first line of defense against fraud and financial crime. [Time: 90 min] **Activity:** Compliance Scenario Application. FTLs must identify the *exact regulatory obligation* for each scenario.'
+                },
+                { id: '5B', day: 5, session: 'Afternoon', title: 'Workflow Mastery & SOP Creation (System Checks)', 
+                    concepts: ['Quality Control (QC) standards and **Audit Trail Requirements**.', 'Pipeline Management: Velocity Metrics and bottleneck identification.', 'Creating **System Feedback Loops** with Operations to improve team quality.'],
+                    activity: { name: 'Workshop: SOP/Dashboard Template', details: 'FTLs create a draft Standard Operating Procedure (SOP) for new file submission and a simple Pipeline Velocity Dashboard template.' },
+                    facilitator: '[Time: 90 min] **Lecture:** Process Deep Dive (Universal). Focus on how to structure a process that is both fast and compliant. [Time: 90 min] **Activity:** SOP/Dashboard Workshop. FTLs must leave with a plan to implement these tools immediately. **Prompt:** "How often do you measure Pipeline Velocity?"'
+                },
+            ],
+            2: [
+                { id: '6A', day: 6, session: 'Morning', title: 'Life Insurance Underwriting & Strategy', 
+                    concepts: ['Carrier’s Perspective: Medical underwriting, MIB reports, and risk classification.', 'IUL & VetLife Program: Caps, floors, cash value access strategies, and policy loan mechanics.', 'Positioning applications for best outcomes.'],
+                    activity: { name: 'Case Study: Life & Retirement Plan Design', details: 'Design a comprehensive life insurance and retirement plan for a sample member (e.g., active duty vs. veteran entrepreneur).' },
+                    facilitator: '[Time: 120 min] **Guest Speaker:** Life Underwriter. Focus on how the FTL teaches their team to integrate life insurance as a financial pillar. [Time: 60 min] **Lecture:** IUL mechanics and illustrations. Focus on explaining projections correctly.'
+                },
+                { id: '6B', day: 6, session: 'Afternoon', title: 'Retirement Planning & P&C Integration', 
+                    concepts: ['VAB Personal Pension Plan and Annuity products (income riders).', 'P&C Underwriting: Credit-based insurance scores and property condition requirements.', 'Umbrella Policies and Commercial P&C overview (BOP, General Liability).'],
+                    activity: { name: 'Needs Analysis Template Creation', details: 'FTLs create a template to conduct a comprehensive P&C and retirement needs analysis for a member.' },
+                    facilitator: '[Time: 90 min] **Lecture:** Retirement planning integration (VA Bank Pension). [Time: 90 min] **Workshop:** P&C underwriting and risk. Emphasize the coordination of benefits. [Time: 60 min] **Activity:** Needs Analysis Template Creation.'
+                },
+                { id: '7A', day: 7, session: 'Morning', title: 'Commercial Credit Analysis (Modeling)', 
+                    concepts: ['Commercial vs. Residential underwriting.', 'Financial Statement Analysis (P&L, Balance Sheet, Cash Flow).', '**DSCR Modeling** and **Global Cash Flow** analysis.'],
+                    activity: { name: 'Hands-On: Business Financial Analysis', details: 'FTLs analyze a redacted P&L statement, calculate key financial ratios (DSCR, Working Capital), and determine a preliminary risk rating.' },
+                    facilitator: '[Time: 120 min] **Guest Speaker:** Commercial Credit Analyst. Focus on how the FTL teaches their team to interview a business owner using financial statements. [Time: 60 min] **Activity:** Hands-on Business Financial Analysis.'
+                },
+                { id: '7B', day: 7, session: 'Afternoon', title: 'SBA & Commercial Real Estate', 
+                    concepts: ['SBA 7(a) and 504 Programs (uses, terms, and guarantees).', 'Commercial Real Estate: **LTV/DSCR Stress Testing** and Environmental Phase I/II assessments.', 'Supporting Veteran Business Owners (SDVOSB, VOSB).'],
+                    activity: { name: 'Scenario: Structuring a Commercial Deal', details: 'Structure a combined SBA 7(a) loan (working capital) and CRE loan (owner-occupied property) for a veteran business.' },
+                    facilitator: '[Time: 180 min] **Lecture/Workshop:** SBA program deep dive and CRE principles. Focus on recourse vs. non-recourse and collateral. **Prompt:** "What is the biggest risk difference between financing a 10-unit residential property and a commercial office building?"'
+                },
+                { id: '8A', day: 8, session: 'Morning', title: 'Beyond Traditional Lending & Business Services', 
+                    concepts: ['Business Banking Services (Merchant Services, Cash Management, ACH).', 'Group Benefits and Employee Services (401k, health plans).', 'The **Business Squad Approach**: Coordinating internal VAB teams.'],
+                    activity: { name: 'Group Brainstorm: Business Onboarding', details: 'Develop a 5-step comprehensive onboarding process for a new, high-value business client.' },
+                    facilitator: '[Time: 90 min] **Guest Speaker:** Business Banking Specialist. Show how integration of services deepens the relationship. [Time: 90 min] **Activity:** Group Brainstorm and presentation of the Business Onboarding process. The goal is client retention.'
+                },
+                { id: '8B', day: 8, session: 'Afternoon', title: 'Complex Business Scenarios & Growth Strategies', 
+                    concepts: ['Business Succession Planning and Buy-Sell Agreements.', 'M&A and expansion financing.', 'Marketing/Networking for Business Growth.'],
+                    activity: { name: 'Case Study: Business Succession', details: 'Address a scenario where a veteran owner is planning retirement, requiring succession planning and key person insurance.' },
+                    facilitator: '[Time: 150 min] **Workshop:** Discuss advanced scenarios. FTLs must be strategic advisors, guiding clients through the entire business lifecycle. [Time: 30 min] **Wrap-up:** Set 90-day partnership outreach goals for their teams.'
+                },
+                { id: '9A', day: 9, session: 'Morning', title: 'Coaching & Mentoring: The GROW Model', 
+                    concepts: ['Effective coaching techniques (asking vs. telling).', 'The **GROW Model** (Goal, Reality, Options, Will) for structured coaching.', 'Developing individualized development plans (IDPs).'],
+                    activity: { name: 'Advanced Role-Play: Coaching for Development', details: 'Practice using the GROW model with a team member struggling with complex product knowledge.' },
+                    facilitator: '[Time: 90 min] **Workshop:** Introduce the GROW model. [Time: 90 min] **Activity:** Advanced Role-Play. Provide immediate, constructive feedback on the FTLs\' use of questioning and listening skills. Remind FTLs that coaching is about *future* performance.'
+                },
+                { id: '9B', day: 9, session: 'Afternoon', title: 'Performance Management & Accountability', 
+                    concepts: ['Setting SMART goals (Production goals, quality metrics).', 'Addressing underperformance early (Documentation and PIPs).', 'Communication Mastery: Having difficult conversations and running effective one-on-ones.'],
+                    activity: { name: 'Workshop: Difficult Conversation Script', details: 'FTLs draft a script for addressing a team member who consistently fails to meet file quality standards.' },
+                    facilitator: '[Time: 90 min] **Lecture:** Performance Management. Stress that accountability must be paired with leadership support. [Time: 90 min] **Activity:** Difficult Conversation Script Workshop. Focus on professional language and documentation. [Time: 60 min] **Discussion:** Recognition and Motivation best practices.'
+                },
+                { id: '10A', day: 10, session: 'Morning', title: 'Comprehensive Master Case Study & Final Assessment', 
+                    concepts: ['Integration of all 10 days of operational and product knowledge.', 'Applying compliance protocols in complex scenarios.', 'Systematic file remediation and problem-solving.'],
+                    activity: { name: 'Final Comprehensive Exam & Case Study', details: 'Written assessment (85% min pass) followed by a final, holistic Master Case Study presentation (5-product solution).' },
+                    facilitator: '[Time: 120 min] **Final Exam.** [Time: 60 min] **Master Case Study** (Individual Work). Circulate and challenge FTLs on their risk decisions. The goal is to see systemic thinking.'
+                },
+                { id: '10B', day: 10, session: 'Afternoon', title: 'Leadership Presentations & Graduation', 
+                    concepts: ['Articulating a clear leadership philosophy and vision.', 'Creating actionable 30-60-90 day plans.', 'The role of senior leadership in ongoing FTL support.'],
+                    activity: { name: 'Final Presentations & 360 Feedback', details: 'Each FTL presents their personal leadership vision. Peer and instructor feedback is provided.' },
+                    facilitator: '[Time: 120 min] **FTL Presentations.** [Time: 60 min] **Guest Speaker Panel** (Squad Leaders/Senior Leadership). [Time: 60 min] **Graduation:** Celebrate the achievement and reinforce the FTL Oath of Leadership Commitment.'
+                }
+            ]
+        };
+        const ALL_SESSIONS = [...FTL_CURRICULUM[1], ...FTL_CURRICULUM[2]];
+        const TOTAL_SESSIONS = ALL_SESSIONS.length;
+
+        // --- Mock Data for Simulation ---
+        const MOCK_FTL_PROGRESS = {
+            '1A': true, '1B': true, '2A': true, '2B': true, '3A': true,
+            '3B': true, '4A': false, '4B': false, '5A': false, '5B': false,
+            '6A': false, '6B': false, '7A': false, '7B': false, '8A': false,
+            '8B': false, '9A': false, '9B': false, '10A': false, '10B': false,
+        };
+        
+        const MOCK_ADMIN_DATA = {
+            'FTL-Alpha-723': { progress: { ...MOCK_FTL_PROGRESS }, userId: 'FTL-Alpha-723', name: 'Commander Alpha', role: 'FTL' }, // 30%
+            'FTL-Bravo-001': { progress: { '1A': true, '1B': true, '2A': true, '2B': true, '3A': true, '6A': true, '6B': true, '7A': true, '7B': true, '8A': true, '8B': true, '9A': true, '9B': true, '10A': true, '10B': true }, userId: 'FTL-Bravo-001', name: 'Lt. Bravo', role: 'FTL' }, // 75%
+            'FTL-Charlie-989': { progress: { ...Object.fromEntries(ALL_SESSIONS.map(s => [s.id, true])) }, userId: 'FTL-Charlie-989', name: 'Capt. Charlie', role: 'FTL' }, // 100%
+            'FTL-Delta-444': { progress: { '1A': true }, userId: 'FTL-Delta-444', name: 'Sgt. Delta', role: 'FTL' }, // 5%
+        };
+        
+        // --- State Management ---
+        let currentRole = 'FTL';
+        let currentMockProgress = { ...MOCK_FTL_PROGRESS };
+        let activeWeek = 1;
+        let expandedSession = null;
+
+        // --- Core Quiz Simulation Functions ---
+        window.startQuiz = (sessionId) => {
+            const result = window.confirm(`SIMULATION: Starting the quiz for ${sessionId}. \n\nIn a real app, this would redirect to a 5-question test covering the session's concepts. \n\nClick OK to simulate **PASS** (mark complete).\nClick Cancel to simulate **FAIL** (remain incomplete).`);
+            
+            if (result) {
+                // Simulate success and mark complete
+                currentMockProgress[sessionId] = true;
+                alert('Quiz Passed! Module marked complete.');
+                renderDashboard();
+            } else {
+                alert('Quiz Failed. Please review the material and try again.');
+            }
+        };
+
+        // --- Component Rendering Functions ---
+
+        const renderCourseDetail = (sessionData, userProgress) => {
+            const isCompleted = userProgress[sessionData.id] || false;
+            const isFacilitator = currentRole === 'Facilitator';
+
+            const activityHtml = sessionData.activity ? `
+                <div class="bg-blue-50 p-3 rounded-md border border-blue-200">
+                    <p class="font-semibold text-blue-700 flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        ACTIVITY: ${sessionData.activity.name || 'Workshop'}
+                    </p>
+                    <p class="text-gray-700 text-sm mt-1">${sessionData.activity.details || ''}</p>
+                </div>` : '';
+
+            const quizButton = isCompleted
+                ? '<button class="px-4 py-1 text-sm font-semibold rounded-full bg-green-600 text-white cursor-default">Completed</button>'
+                : `<button onclick="startQuiz('${sessionData.id}')" class="px-4 py-1 text-sm font-semibold rounded-full bg-primary-accent text-white hover:bg-red-700 transition">Start Quiz</button>`;
+
+            const facilitatorScript = `
+                <div class="border-l-4 border-yellow-500 pl-3 bg-yellow-50 p-3 rounded-md">
+                    <p class="font-bold text-yellow-700">FACILITATOR TEACHING SCRIPT:</p>
+                    <p class="text-gray-700 text-sm italic">${sessionData.facilitator}</p>
+                    <p class="mt-2 font-bold text-yellow-700">DISCUSSION PROMPT:</p>
+                    <p class="text-gray-700 text-sm italic">"Based on the underwriter\'s risk model, what is the single biggest factor that can cause a deal to be suspended at **The Veteran Alliance Bank**?"</p>
+                </div>
+            `;
+            
+            return `
+                <div class="p-4 bg-white rounded-lg shadow-inner border border-gray-200 mt-4">
+                    <div class="flex justify-between items-start mb-3 border-b pb-2">
+                        <h4 class="text-xl font-bold text-secondary-dark">${sessionData.title}</h4>
+                        ${isFacilitator ? '' : quizButton}
+                    </div>
+                    
+                    <div class="space-y-4">
+                        ${isFacilitator ? facilitatorScript : ''}
+
+                        <div>
+                            <p class="font-semibold text-secondary-dark mb-1 flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-primary-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.57.065-3.136.315-4.66.757-1.523.441-2.996 1.054-4.38 1.838a1 1 0 00-.318.89l.348 2.088a1 1 0 00.56.787l3.86 2.012a1 1 0 00.992-.124l4.288-3.92a1 1 0 00-.73-1.68zM12 21a9 9 0 006.128-2.316l-.286-1.536a1 1 0 00-.518-.687L12 17a1 1 0 00-.97-.56l-3.21-1.07a1 1 0 00-.712.597l-1.42 2.84a1 1 0 00.32 1.094A9.001 9.001 0 0012 21z"/></svg>
+                                CORE CONCEPTS (Student Learning Objectives):
+                            </p>
+                            <ul class="list-disc list-inside ml-4 space-y-1 text-gray-600">
+                                ${sessionData.concepts.map(c => `<li class="text-sm">${c}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ${activityHtml}
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderCurriculum = (userId) => {
+            return `
+                <div class="p-4 md:p-8">
+                    <h2 class="text-3xl font-bold text-secondary-dark mb-4">FTL Academy Curriculum</h2>
+                    
+                    <div class="flex border-b mb-6 schedule-scroll overflow-x-auto bg-white rounded-t-xl shadow-inner">
+                        <button onclick="setActiveWeek(1)" class="p-3 text-sm font-medium border-b-2 transition duration-150 ${activeWeek === 1 ? 'border-primary-accent text-primary-accent' : 'border-transparent text-gray-500 hover:text-primary-accent'}">
+                            WEEK 1: Mortgage & Operational Mastery
+                        </button>
+                        <button onclick="setActiveWeek(2)" class="p-3 text-sm font-medium border-b-2 transition duration-150 ${activeWeek === 2 ? 'border-primary-accent text-primary-accent' : 'border-transparent text-gray-500 hover:text-primary-accent'}">
+                            WEEK 2: Insurance, Commercial & Leadership Execution
+                        </button>
+                    </div>
+
+                    <div id="curriculum-content" class="space-y-4">
+                        ${FTL_CURRICULUM[activeWeek].map((session) => `
+                            <div class="bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-secondary-dark">
+                                <div 
+                                    class="p-4 cursor-pointer flex justify-between items-center hover:bg-gray-50"
+                                    onclick="toggleSession('${session.id}')"
+                                >
+                                    <div>
+                                        <p class="text-xs font-semibold uppercase tracking-wider text-primary-accent">Day ${session.day} - ${session.session}</p>
+                                        <h3 class="text-lg font-bold text-secondary-dark">${session.title}</h3>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <span class="w-3 h-3 rounded-full ${currentMockProgress[session.id] ? 'bg-green-600' : 'bg-gray-400'}"></span>
+                                        <svg class="w-5 h-5 text-gray-600 transition-transform ${expandedSession === session.id ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                                    </div>
+                                </div>
+                                ${expandedSession === session.id ? `
+                                    <div class="p-4 border-t border-gray-200">
+                                        ${renderCourseDetail(session, currentMockProgress)}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderFTLDashboard = (userId) => {
+            const completedSessions = Object.values(currentMockProgress).filter(v => v).length;
+            const progressPercentage = Math.round((completedSessions / TOTAL_SESSIONS) * 100) || 0;
+
+            const FTL_HTML = `
+                <div class="p-4 md:p-8">
+                    <h2 class="text-3xl font-bold text-secondary-dark mb-4">FTL Academy Progress Dashboard</h2>
+                    
+                    <div class="bg-white p-4 rounded-xl shadow-lg mb-6 border-l-4 border-primary-accent">
+                        <p class="text-sm text-gray-600 mb-2">FTL ID: <span class="font-mono text-xs text-primary-accent">${userId}</span></p>
+                        <p class="text-xl font-semibold text-secondary-dark mb-2">Overall Progress: ${completedSessions} of ${TOTAL_SESSIONS} Sessions</p>
+                        <div class="w-full bg-gray-200 rounded-full h-3">
+                            <div 
+                                class="bg-primary-accent h-3 rounded-full transition-all duration-500" 
+                                style="width: ${progressPercentage}%"
+                            ></div>
+                        </div>
+                        <p class="text-right text-sm font-medium text-primary-accent mt-1">${progressPercentage}% Complete</p>
+                    </div>
+
+                    ${renderCurriculum(userId)}
+                </div>
+            `;
+            return FTL_HTML;
+        };
+        
+        const renderFacilitatorDashboard = (userId) => {
+            const FTL_KEYS = Object.keys(MOCK_ADMIN_DATA).filter(k => MOCK_ADMIN_DATA[k].role === 'FTL');
+
+            const FACILITATOR_HTML = `
+                <div class="p-4 md:p-8">
+                    <h2 class="text-3xl font-bold text-secondary-dark mb-4">Facilitator Teaching Console</h2>
+                    <div class="bg-yellow-50 p-4 rounded-xl shadow-lg mb-6 border-l-4 border-yellow-500">
+                        <p class="font-semibold text-yellow-800">INSTRUCTOR MODE:</p>
+                        <p class="text-sm text-yellow-700">Expanding any session below will display the **Full Facilitator Teaching Script** and timing notes for instructional delivery.</p>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-secondary-dark mb-3">Live Group Progress Check</h3>
+                    <div class="bg-white rounded-xl shadow-lg p-4 mb-8">
+                        <ul class="space-y-2">
+                            ${FTL_KEYS.map(key => {
+                                const data = MOCK_ADMIN_DATA[key];
+                                const completed = Object.values(data.progress || {}).filter(v => v).length;
+                                const percentage = Math.round((completed / TOTAL_SESSIONS) * 100) || 0;
+                                return `
+                                    <li class="flex items-center justify-between border-b pb-2">
+                                        <span class="font-semibold text-secondary-dark">${data.name}</span>
+                                        <span class="text-sm">${completed} / ${TOTAL_SESSIONS} Sessions (${percentage}%)</span>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+
+                    ${renderCurriculum(userId)}
+                </div>
+            `;
+            return FACILITATOR_HTML;
+        };
+
+
+        const renderAdminDashboard = () => {
+            const FTL_KEYS = Object.keys(MOCK_ADMIN_DATA).filter(k => MOCK_ADMIN_DATA[k].role === 'FTL');
+
+            const ADMIN_HTML = `
+                <div class="p-4 md:p-8">
+                    <h2 class="text-3xl font-bold text-secondary-dark mb-6">Admin Progress Tracking Console</h2>
+                    
+                    <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-secondary-dark text-white">
+                                <tr>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider">FTL NAME</th>
+                                    <th class="px-3 py-3 text-left text-xs font-semibold uppercase tracking-wider">Progress</th>
+                                    ${ALL_SESSIONS.map(session => `
+                                        <th key="${session.id}" class="px-2 py-3 text-center text-xs font-semibold uppercase tracking-wider">
+                                            ${session.id}
+                                            <span class="block font-normal text-gray-300 text-[10px] whitespace-nowrap">Day ${session.day}</span>
+                                        </th>
+                                    `).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${FTL_KEYS.map(userId => {
+                                    const data = MOCK_ADMIN_DATA[userId];
+                                    const completed = Object.values(data.progress || {}).filter(v => v).length;
+                                    const percentage = Math.round((completed / TOTAL_SESSIONS) * 100) || 0;
+                                    return `
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-secondary-dark">${data.name}</td>
+                                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <div class="w-20 bg-gray-200 rounded-full h-2">
+                                                    <div class="bg-primary-accent h-2 rounded-full" style="width: ${percentage}%"></div>
+                                                </div>
+                                                <span class="text-xs">${percentage}%</span>
+                                            </td>
+                                            ${ALL_SESSIONS.map(session => `
+                                                <td class="px-2 py-4 whitespace-nowrap text-center">
+                                                    <span class="w-4 h-4 inline-block rounded-full ${data.progress?.[session.id] ? 'bg-green-500' : 'bg-red-400'}" title="${data.progress?.[session.id] ? 'Complete' : 'Incomplete'}"></span>
+                                                </td>
+                                            `).join('')}
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            return ADMIN_HTML;
+        };
+
+        // --- Controller Logic ---
+        
+        window.setActiveWeek = (week) => {
+            activeWeek = week;
+            renderDashboard();
+        };
+
+        window.toggleSession = (id) => {
+            expandedSession = expandedSession === id ? null : id;
+            renderDashboard();
+        };
+
+        window.setRole = (role) => {
+            currentRole = role;
+            renderDashboard();
+        };
+
+        const renderDashboard = () => {
+            const root = document.getElementById('app-root');
+            const roleTag = document.getElementById('role-tag');
+            const currentRoleText = document.getElementById('current-role');
+            
+            if (!root || !roleTag || !currentRoleText) return;
+
+            let contentHTML = '';
+            let tagClass = '';
+            let tagText = '';
+
+            switch(currentRole) {
+                case 'Admin':
+                    contentHTML = renderAdminDashboard();
+                    tagText = 'ADMIN CONSOLE';
+                    tagClass = 'bg-secondary-dark';
+                    break;
+                case 'Facilitator':
+                    contentHTML = renderFacilitatorDashboard('Facilitator-Lead');
+                    tagText = 'FACILITATOR VIEW';
+                    tagClass = 'bg-yellow-600';
+                    break;
+                case 'FTL':
+                default:
+                    contentHTML = renderFTLDashboard('FTL-Alpha-723');
+                    tagText = 'FTL USER';
+                    tagClass = 'bg-primary-accent';
+                    break;
+            }
+
+            root.innerHTML = contentHTML;
+            roleTag.textContent = tagText;
+            roleTag.className = `text-sm font-semibold p-2 rounded-lg ${tagClass}`;
+            currentRoleText.textContent = tagText;
+        };
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDashboard();
+        });
+    </script>
+</body>
+</html>
+
